@@ -1,0 +1,60 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: pgvector
+  namespace: ember-ai
+spec:
+  serviceName: "pgvector-svc"
+  replicas: 1
+  selector:
+    matchLabels:
+      app: pgvector
+  template:
+    metadata:
+      labels:
+        app: pgvector
+    spec:
+      containers:
+      - name: database
+        # Using the official timescale/pgvector or ankane/pgvector image
+        image: ankane/pgvector:v0.5.1
+        ports:
+        - containerPort: 5432
+        env:
+        - name: POSTGRES_USER
+          valueFrom:
+            secretKeyRef:
+              name: ember-ai-env-secrets
+              key: POSTGRES_USER
+        - name: POSTGRES_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: ember-ai-env-secrets
+              key: POSTGRES_PASSWORD
+        - name: POSTGRES_DB
+          value: ember_ai
+        volumeMounts:
+        - name: pgdata
+          mountPath: /var/lib/postgresql/data
+  volumeClaimTemplates:
+  - metadata:
+      name: pgdata
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      resources:
+        requests:
+          storage: 50Gi
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: pgvector-svc
+  namespace: ember-ai
+spec:
+  ports:
+  - port: 5432
+    targetPort: 5432
+  selector:
+    app: pgvector
+  clusterIP: None # Headless service for StatefulSet

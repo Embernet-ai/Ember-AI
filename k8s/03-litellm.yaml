@@ -1,0 +1,52 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: litellm
+  namespace: ember-ai
+spec:
+  replicas: 1 # Scale as needed
+  selector:
+    matchLabels:
+      app: litellm
+  template:
+    metadata:
+      labels:
+        app: litellm
+    spec:
+      containers:
+      - name: litellm
+        image: ghcr.io/berriai/litellm:main-latest
+        ports:
+        - containerPort: 4000
+        env:
+        - name: LITELLM_MASTER_KEY
+          valueFrom:
+            secretKeyRef:
+              name: ember-ai-env-secrets
+              key: LITELLM_MASTER_KEY
+        - name: DATABASE_URL
+          valueFrom:
+            secretKeyRef:
+              name: ember-ai-env-secrets
+              key: POSTGRES_PASSWORD # Or construct a full DSN depending on Bitwarden config
+        - name: STORE_MODEL_IN_DB
+          value: "True"
+        - name: REDIS_HOST
+          value: "valkey-svc"
+        - name: REDIS_PORT
+          value: "6379"
+        # Optional: Inject Keycloak env vars for UI SSO here if supported by latest LiteLLM
+        
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: litellm-svc
+  namespace: ember-ai
+spec:
+  type: ClusterIP
+  ports:
+  - port: 4000
+    targetPort: 4000
+  selector:
+    app: litellm

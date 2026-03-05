@@ -1,0 +1,87 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: n8n
+  namespace: ember-ai
+spec:
+  serviceName: "n8n-svc"
+  replicas: 1
+  selector:
+    matchLabels:
+      app: n8n
+  template:
+    metadata:
+      labels:
+        app: n8n
+    spec:
+      containers:
+      - name: n8n
+        image: docker.n8n.io/n8nio/n8n:latest
+        ports:
+        - containerPort: 5678
+        env:
+        # Postgres Backend config
+        - name: DB_TYPE
+          value: postgresdb
+        - name: DB_POSTGRESDB_HOST
+          value: pgvector-svc
+        - name: DB_POSTGRESDB_PORT
+          value: "5432"
+        - name: DB_POSTGRESDB_USER
+          valueFrom:
+            secretKeyRef:
+              name: ember-ai-env-secrets
+              key: POSTGRES_USER
+        - name: DB_POSTGRESDB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: ember-ai-env-secrets
+              key: POSTGRES_PASSWORD
+        - name: DB_POSTGRESDB_DATABASE
+          value: ember_ai
+        
+        # Redis/Valkey cache config 
+        - name: EXECUTIONS_DATA_SAVE_ON_ERROR
+          value: "all"
+        - name: EXECUTIONS_DATA_SAVE_ON_SUCCESS
+          value: "none"
+        - name: QUEUE_MESSAGE_TIMEOUT
+          value: "10000"
+        - name: QUEUE_BULL_REDIS_HOST
+          value: valkey-svc
+        - name: QUEUE_BULL_REDIS_PORT
+          value: "6379"
+        
+        # Webhook routing
+        - name: WEBHOOK_URL
+          value: "https://n8n.ember.internal" # Internal twingate route
+        
+        # Keycloak SSO
+        - name: N8N_SSO_SAML_ENABLED # Or OIDC equivalent 
+          value: "true"
+        
+        volumeMounts:
+        - name: n8n-data
+          mountPath: /home/node/.n8n
+  volumeClaimTemplates:
+  - metadata:
+      name: n8n-data
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      resources:
+        requests:
+          storage: 10Gi
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: n8n-svc
+  namespace: ember-ai
+spec:
+  type: ClusterIP
+  ports:
+  - port: 5678
+    targetPort: 5678
+  selector:
+    app: n8n

@@ -1,0 +1,24 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ziti-edge-tunnel
+  namespace: ember-ai
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ziti-edge-tunnel
+  template:
+    metadata:
+      labels:
+        app: ziti-edge-tunnel
+    spec:
+      containers:
+      - name: ziti-edge-tunnel
+        image: openziti/ziti-edge-tunnel:latest
+        env:
+        - name: ZITI_IDENTITY_JSON
+          valueFrom:
+            secretKeyRef:
+              name: ember-ai-env-secrets
+              key: ZITI_IDENTITY_JSON

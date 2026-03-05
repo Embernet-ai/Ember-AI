@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: valkey
+  namespace: ember-ai
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: valkey
+  template:
+    metadata:
+      labels:
+        app: valkey
+    spec:
+      containers:
+      - name: valkey
+        image: valkey/valkey:7.2.5
+        ports:
+        - containerPort: 6379
+        command: ["valkey-server"]
+        args: ["--appendonly", "yes"] # Optional persistence
+        volumeMounts:
+        - name: valkey-data
+          mountPath: /data
+      volumes:
+      - name: valkey-data
+        emptyDir: {} # Switch to PVC for prod persistence
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: valkey-svc
+  namespace: ember-ai
+spec:
+  ports:
+  - port: 6379
+    targetPort: 6379
+  selector:
+    app: valkey
