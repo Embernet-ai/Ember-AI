@@ -28,7 +28,7 @@ spec:
           valueFrom:
             secretKeyRef:
               name: ember-ai-env-secrets
-              key: POSTGRES_PASSWORD # Or construct a full DSN depending on Bitwarden config
+              key: DATABASE_URL
         - name: STORE_MODEL_IN_DB
           value: "True"
         - name: REDIS_HOST
