@@ -1,0 +1,125 @@
+{
+  "name": "RAG Ingestion Pipeline",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "rag/ingest",
+        "responseMode": "lastNode"
+      },
+      "name": "Webhook Trigger",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [250, 300],
+      "id": "node-webhook-ingest"
+    },
+    {
+      "parameters": {
+        "resource": "textSplitter",
+        "operation": "splitText",
+        "text": "={{ $json.body.text }}",
+        "chunkSize": 1000,
+        "chunkOverlap": 200
+      },
+      "name": "Split Text",
+      "type": "@n8n/n8n-nodes-langchain.textSplitterRecursiveCharacterTextSplitter",
+      "typeVersion": 1,
+      "position": [500, 300],
+      "id": "node-text-splitter"
+    },
+    {
+      "parameters": {
+        "url": "http://litellm-svc:4000/v1/embeddings",
+        "method": "POST",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer {{ $env.LITELLM_MASTER_KEY }}"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "model",
+              "value": "text-embedding-3-small"
+            },
+            {
+              "name": "input",
+              "value": "={{ $json.text }}"
+            }
+          ]
+        }
+      },
+      "name": "Generate Embeddings",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [750, 300],
+      "id": "node-embeddings"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "INSERT INTO documents (content, metadata, embedding) VALUES ($1, $2, $3::vector)",
+        "additionalFields": {
+          "queryParams": "={{ [$json.text, JSON.stringify($json.metadata || {}), '[' + $json.data[0].embedding.join(',') + ']'] }}"
+        }
+      },
+      "name": "Store in pgvector",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2,
+      "position": [1000, 300],
+      "id": "node-pgvector-store",
+      "credentials": {
+        "postgres": {
+          "id": "REPLACE_WITH_CREDENTIAL_ID",
+          "name": "Ember pgvector"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "name": "Success Response",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [1250, 300],
+      "id": "node-respond"
+    }
+  ],
+  "connections": {
+    "Webhook Trigger": {
+      "main": [
+        [{ "node": "Split Text", "type": "main", "index": 0 }]
+      ]
+    },
+    "Split Text": {
+      "main": [
+        [{ "node": "Generate Embeddings", "type": "main", "index": 0 }]
+      ]
+    },
+    "Generate Embeddings": {
+      "main": [
+        [{ "node": "Store in pgvector", "type": "main", "index": 0 }]
+      ]
+    },
+    "Store in pgvector": {
+      "main": [
+        [{ "node": "Success Response", "type": "main", "index": 0 }]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "tags": [
+    { "name": "rag" },
+    { "name": "ingestion" }
+  ]
+}

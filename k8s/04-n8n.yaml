@@ -20,7 +20,9 @@ spec:
         ports:
         - containerPort: 5678
         env:
-        # Postgres Backend config
+        # -----------------------------------------------------------------
+        # PostgreSQL Backend
+        # -----------------------------------------------------------------
         - name: DB_TYPE
           value: postgresdb
         - name: DB_POSTGRESDB_HOST
@@ -39,8 +41,10 @@ spec:
               key: POSTGRES_PASSWORD
         - name: DB_POSTGRESDB_DATABASE
           value: ember_ai
-        
-        # Redis/Valkey cache config 
+
+        # -----------------------------------------------------------------
+        # Redis/Valkey queue backend
+        # -----------------------------------------------------------------
         - name: EXECUTIONS_DATA_SAVE_ON_ERROR
           value: "all"
         - name: EXECUTIONS_DATA_SAVE_ON_SUCCESS
@@ -51,15 +55,34 @@ spec:
           value: valkey-svc
         - name: QUEUE_BULL_REDIS_PORT
           value: "6379"
-        
-        # Webhook routing
+
+        # -----------------------------------------------------------------
+        # Webhook routing — OpenZiti service domain
+        # -----------------------------------------------------------------
         - name: WEBHOOK_URL
-          value: "https://n8n.ember.internal" # Internal twingate route
-        
-        # Keycloak SSO
-        - name: N8N_SSO_SAML_ENABLED # Or OIDC equivalent 
-          value: "true"
-        
+          value: "https://n8n.ember.ziti"
+
+        # -----------------------------------------------------------------
+        # Keycloak SSO (OIDC) — n8n External Auth
+        # Docs: https://docs.n8n.io/hosting/configuration/environment-variables/sso/
+        # -----------------------------------------------------------------
+        - name: N8N_AUTH_TYPE
+          value: "oidc"
+        - name: N8N_OIDC_CLIENT_ID
+          valueFrom:
+            secretKeyRef:
+              name: ember-ai-env-secrets
+              key: KEYCLOAK_CLIENT_ID
+        - name: N8N_OIDC_CLIENT_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: ember-ai-env-secrets
+              key: KEYCLOAK_CLIENT_SECRET
+        - name: N8N_OIDC_ISSUER
+          value: "https://<KEYCLOAK_HOST>/realms/<REALM>"
+        - name: N8N_OIDC_ALLOWED_GROUPS
+          value: ""  # Leave empty to allow all authenticated users, or set a group
+
         volumeMounts:
         - name: n8n-data
           mountPath: /home/node/.n8n

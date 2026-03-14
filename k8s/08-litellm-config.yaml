@@ -1,0 +1,71 @@
+# =============================================================================
+# LiteLLM Configuration — model routing, fallbacks, and caching
+# Mounted as a ConfigMap into the LiteLLM deployment
+# =============================================================================
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: litellm-config
+  namespace: ember-ai
+data:
+  config.yaml: |
+    model_list:
+      # -----------------------------------------------------------------------
+      # OpenAI Models
+      # -----------------------------------------------------------------------
+      - model_name: gpt-4o
+        litellm_params:
+          model: openai/gpt-4o
+          api_key: os.environ/OPENAI_API_KEY
+      - model_name: gpt-4o-mini
+        litellm_params:
+          model: openai/gpt-4o-mini
+          api_key: os.environ/OPENAI_API_KEY
+
+      # -----------------------------------------------------------------------
+      # Anthropic Models
+      # -----------------------------------------------------------------------
+      - model_name: claude-3.5-sonnet
+        litellm_params:
+          model: anthropic/claude-3-5-sonnet-20241022
+          api_key: os.environ/ANTHROPIC_API_KEY
+      - model_name: claude-3-haiku
+        litellm_params:
+          model: anthropic/claude-3-haiku-20240307
+          api_key: os.environ/ANTHROPIC_API_KEY
+
+      # -----------------------------------------------------------------------
+      # Google Models
+      # -----------------------------------------------------------------------
+      - model_name: gemini-2.0-flash
+        litellm_params:
+          model: gemini/gemini-2.0-flash
+          api_key: os.environ/GEMINI_API_KEY
+
+    # -------------------------------------------------------------------------
+    # Router Settings — fallback chain and retry logic
+    # -------------------------------------------------------------------------
+    router_settings:
+      routing_strategy: "simple-shuffle"
+      num_retries: 2
+      timeout: 120
+      fallbacks:
+        - gpt-4o: ["claude-3.5-sonnet", "gemini-2.0-flash"]
+        - claude-3.5-sonnet: ["gpt-4o", "gemini-2.0-flash"]
+
+    # -------------------------------------------------------------------------
+    # Caching — Valkey (Redis-compatible)
+    # -------------------------------------------------------------------------
+    litellm_settings:
+      cache: true
+      cache_params:
+        type: "redis"
+        host: "valkey-svc"
+        port: 6379
+
+    # -------------------------------------------------------------------------
+    # General Settings
+    # -------------------------------------------------------------------------
+    general_settings:
+      master_key: os.environ/LITELLM_MASTER_KEY
+      database_url: os.environ/DATABASE_URL

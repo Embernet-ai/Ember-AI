@@ -1,0 +1,138 @@
+{
+  "name": "RAG Retrieval Pipeline",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "rag/query",
+        "responseMode": "lastNode"
+      },
+      "name": "Webhook Trigger",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [250, 300],
+      "id": "node-webhook-query"
+    },
+    {
+      "parameters": {
+        "url": "http://litellm-svc:4000/v1/embeddings",
+        "method": "POST",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer {{ $env.LITELLM_MASTER_KEY }}"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "model",
+              "value": "text-embedding-3-small"
+            },
+            {
+              "name": "input",
+              "value": "={{ $json.body.query }}"
+            }
+          ]
+        }
+      },
+      "name": "Embed Query",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [500, 300],
+      "id": "node-embed-query"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT content, metadata, 1 - (embedding <=> $1::vector) AS similarity FROM documents ORDER BY embedding <=> $1::vector LIMIT 5",
+        "additionalFields": {
+          "queryParams": "={{ ['[' + $json.data[0].embedding.join(',') + ']'] }}"
+        }
+      },
+      "name": "Vector Search",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2,
+      "position": [750, 300],
+      "id": "node-vector-search",
+      "credentials": {
+        "postgres": {
+          "id": "REPLACE_WITH_CREDENTIAL_ID",
+          "name": "Ember pgvector"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "http://litellm-svc:4000/v1/chat/completions",
+        "method": "POST",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer {{ $env.LITELLM_MASTER_KEY }}"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ model: 'gpt-4o', messages: [{ role: 'system', content: 'You are a helpful assistant. Use the following context to answer the user question accurately. If the context does not contain the answer, say so.\\n\\nContext:\\n' + $items('Vector Search').map(i => i.json.content).join('\\n---\\n') }, { role: 'user', content: $('Webhook Trigger').first().json.body.query }] }) }}"
+      },
+      "name": "LLM Completion",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [1000, 300],
+      "id": "node-llm-completion"
+    },
+    {
+      "parameters": {},
+      "name": "Return Answer",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [1250, 300],
+      "id": "node-respond"
+    }
+  ],
+  "connections": {
+    "Webhook Trigger": {
+      "main": [
+        [{ "node": "Embed Query", "type": "main", "index": 0 }]
+      ]
+    },
+    "Embed Query": {
+      "main": [
+        [{ "node": "Vector Search", "type": "main", "index": 0 }]
+      ]
+    },
+    "Vector Search": {
+      "main": [
+        [{ "node": "LLM Completion", "type": "main", "index": 0 }]
+      ]
+    },
+    "LLM Completion": {
+      "main": [
+        [{ "node": "Return Answer", "type": "main", "index": 0 }]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "tags": [
+    { "name": "rag" },
+    { "name": "retrieval" }
+  ]
+}

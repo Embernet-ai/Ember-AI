@@ -16,9 +16,32 @@ spec:
       containers:
       - name: ziti-edge-tunnel
         image: openziti/ziti-edge-tunnel:latest
+        args: ["run"]
         env:
+        # Source: embernet org → emberflux GitHub Secrets
         - name: ZITI_IDENTITY_JSON
           valueFrom:
             secretKeyRef:
               name: ember-ai-env-secrets
               key: ZITI_IDENTITY_JSON
+        securityContext:
+          privileged: true
+          capabilities:
+            add:
+            - NET_ADMIN
+            - NET_BIND_SERVICE
+        resources:
+          requests:
+            memory: "64Mi"
+            cpu: "50m"
+          limits:
+            memory: "256Mi"
+            cpu: "250m"
+        volumeMounts:
+        - name: tun-device
+          mountPath: /dev/net/tun
+      volumes:
+      - name: tun-device
+        hostPath:
+          path: /dev/net/tun
+          type: CharDevice

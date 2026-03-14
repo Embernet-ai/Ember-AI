@@ -89,3 +89,18 @@ time="2026-03-14T01:18:28-06:00" level=warning msg="error running query" connect
 time="2026-03-14T01:18:31-06:00" level=info msg=NewConnection DisableClientMultiStatements=false connectionID=9
 time="2026-03-14T01:18:31-06:00" level=info msg=ConnectionClosed connectionID=9
 time="2026-03-14T01:18:36-06:00" level=info msg=ConnectionClosed connectionID=8
+Starting server with Config HP="127.0.0.1:33303"|T="28800000"|R="false"|L="info"
+time="2026-03-14T08:12:34-06:00" level=info msg="Server ready. Accepting connections."
+time="2026-03-14T08:12:34-06:00" level=warning msg="secure_file_priv is set to \"\", which is insecure."
+time="2026-03-14T08:12:34-06:00" level=warning msg="Any user with GRANT FILE privileges will be able to read any file which the sql-server process can read."
+time="2026-03-14T08:12:34-06:00" level=warning msg="Please consider restarting the server with secure_file_priv set to a safe (or non-existent) directory."
+time="2026-03-14T08:12:34-06:00" level=info msg=NewConnection DisableClientMultiStatements=false connectionID=1
+time="2026-03-14T08:12:34-06:00" level=info msg=NewConnection DisableClientMultiStatements=false connectionID=2
+time="2026-03-14T08:12:34-06:00" level=error msg="Cannot send HandshakeV10 packet: write tcp 127.0.0.1:33303->127.0.0.1:32380: wsasend: An established connection was aborted by the software in your host machine.\nWrite(packet) failed\nconn 1"
+time="2026-03-14T08:12:34-06:00" level=error msg="Cannot send HandshakeV10 packet: write tcp 127.0.0.1:33303->127.0.0.1:32381: wsasend: An established connection was aborted by the software in your host machine.\nWrite(packet) failed\nconn 2"
+time="2026-03-14T08:12:34-06:00" level=info msg=ConnectionClosed connectionID=1
+time="2026-03-14T08:12:34-06:00" level=info msg=ConnectionClosed connectionID=2
+time="2026-03-14T08:12:34-06:00" level=info msg=NewConnection DisableClientMultiStatements=false connectionID=3
+time="2026-03-14T08:12:34-06:00" level=info msg=NewConnection DisableClientMultiStatements=false connectionID=4
+time="2026-03-14T08:12:34-06:00" level=info msg=ConnectionClosed connectionID=3
+time="2026-03-14T08:12:34-06:00" level=info msg=ConnectionClosed connectionID=4

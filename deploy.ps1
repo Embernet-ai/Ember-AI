@@ -5,7 +5,7 @@
 .DESCRIPTION
     This script applies all Kubernetes manifests located in the k8s directory.
     It ensures that the correct namespace is created before deploying secrets,
-    databases, cache, and application services (n8n, LiteLLM, Twingate).
+    databases, cache, and application services (n8n, LiteLLM, OpenZiti).
 
 .EXAMPLE
     .\deploy.ps1
@@ -41,6 +41,9 @@ $manifests = @(
     "00-namespace-and-secrets.yaml",
     "01-pgvector.yaml",
     "02-valkey.yaml",
+    "06-external-secrets-operator.yaml",
+    "07-bitwarden-eso-clusterstore.yaml",
+    "08-litellm-config.yaml",
     "03-litellm.yaml",
     "04-n8n.yaml",
     "05-openziti.yaml"

@@ -4,7 +4,7 @@ metadata:
   name: litellm
   namespace: ember-ai
 spec:
-  replicas: 1 # Scale as needed
+  replicas: 1
   selector:
     matchLabels:
       app: litellm
@@ -16,6 +16,7 @@ spec:
       containers:
       - name: litellm
         image: ghcr.io/berriai/litellm:main-latest
+        args: ["--config", "/app/config.yaml"]
         ports:
         - containerPort: 4000
         env:
@@ -35,8 +36,35 @@ spec:
           value: "valkey-svc"
         - name: REDIS_PORT
           value: "6379"
-        # Optional: Inject Keycloak env vars for UI SSO here if supported by latest LiteLLM
-        
+        # -----------------------------------------------------------------
+        # Keycloak SSO (OIDC) — LiteLLM Generic OAuth2 Provider
+        # -----------------------------------------------------------------
+        - name: GENERIC_AUTHORIZATION_ENDPOINT
+          value: "https://<KEYCLOAK_HOST>/realms/<REALM>/protocol/openid-connect/auth"
+        - name: GENERIC_TOKEN_ENDPOINT
+          value: "https://<KEYCLOAK_HOST>/realms/<REALM>/protocol/openid-connect/token"
+        - name: GENERIC_USERINFO_ENDPOINT
+          value: "https://<KEYCLOAK_HOST>/realms/<REALM>/protocol/openid-connect/userinfo"
+        - name: GENERIC_CLIENT_ID
+          valueFrom:
+            secretKeyRef:
+              name: ember-ai-env-secrets
+              key: KEYCLOAK_CLIENT_ID
+        - name: GENERIC_CLIENT_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: ember-ai-env-secrets
+              key: KEYCLOAK_CLIENT_SECRET
+        volumeMounts:
+        - name: litellm-config
+          mountPath: /app/config.yaml
+          subPath: config.yaml
+          readOnly: true
+      volumes:
+      - name: litellm-config
+        configMap:
+          name: litellm-config
+
 ---
 apiVersion: v1
 kind: Service
