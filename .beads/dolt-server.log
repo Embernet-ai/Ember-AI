@@ -1,0 +1,91 @@
+Starting server with Config HP="127.0.0.1:33303"|T="28800000"|R="false"|L="info"
+time="2026-03-13T23:02:39-06:00" level=info msg="Server ready. Accepting connections."
+time="2026-03-13T23:02:39-06:00" level=warning msg="secure_file_priv is set to \"\", which is insecure."
+time="2026-03-13T23:02:39-06:00" level=warning msg="Any user with GRANT FILE privileges will be able to read any file which the sql-server process can read."
+time="2026-03-13T23:02:39-06:00" level=warning msg="Please consider restarting the server with secure_file_priv set to a safe (or non-existent) directory."
+time="2026-03-13T23:02:39-06:00" level=info msg=NewConnection DisableClientMultiStatements=false connectionID=2
+time="2026-03-13T23:02:39-06:00" level=info msg=NewConnection DisableClientMultiStatements=false connectionID=1
+time="2026-03-13T23:02:39-06:00" level=error msg="Cannot send HandshakeV10 packet: write tcp 127.0.0.1:33303->127.0.0.1:33361: wsasend: An established connection was aborted by the software in your host machine.\nWrite(packet) failed\nconn 2"
+time="2026-03-13T23:02:39-06:00" level=error msg="Cannot send HandshakeV10 packet: write tcp 127.0.0.1:33303->127.0.0.1:33360: wsasend: An established connection was aborted by the software in your host machine.\nWrite(packet) failed\nconn 1"
+time="2026-03-13T23:02:39-06:00" level=info msg=ConnectionClosed connectionID=2
+time="2026-03-13T23:02:39-06:00" level=info msg=ConnectionClosed connectionID=1
+time="2026-03-13T23:02:39-06:00" level=info msg=NewConnection DisableClientMultiStatements=false connectionID=3
+time="2026-03-13T23:02:39-06:00" level=info msg=NewConnection DisableClientMultiStatements=false connectionID=4
+time="2026-03-13T23:02:39-06:00" level=info msg=ConnectionClosed connectionID=3
+time="2026-03-13T23:02:39-06:00" level=warning msg="error running query" connectTime="2026-03-13 23:02:39.2633004 -0600 CST m=+0.717226001" connectionDb=beads_Ember-AI connectionID=4 error="Duplicate key name 'idx_issues_issue_type'" queryTime="2026-03-13 23:02:39.3491963 -0600 CST m=+0.803121901"
+time="2026-03-13T23:02:39-06:00" level=warning msg="error running query" connectTime="2026-03-13 23:02:39.2633004 -0600 CST m=+0.717226001" connectionDb=beads_Ember-AI connectionID=4 error="foreign key `fk_dep_depends_on` was not found on the table `dependencies`" queryTime="2026-03-13 23:02:39.3525441 -0600 CST m=+0.806469701"
+time="2026-03-13T23:02:39-06:00" level=warning msg="error running query" connectTime="2026-03-13 23:02:39.2633004 -0600 CST m=+0.717226001" connectionDb=beads_Ember-AI connectionID=4 error="nothing to commit" queryTime="2026-03-13 23:02:39.4775364 -0600 CST m=+0.931462001"
+time="2026-03-13T23:02:39-06:00" level=info msg=NewConnection DisableClientMultiStatements=false connectionID=5
+time="2026-03-13T23:02:39-06:00" level=info msg=ConnectionClosed connectionID=5
+time="2026-03-13T23:02:40-06:00" level=info msg=ConnectionClosed connectionID=4
+time="2026-03-13T23:02:40-06:00" level=info msg=NewConnection DisableClientMultiStatements=false connectionID=6
+time="2026-03-13T23:02:40-06:00" level=error msg="Cannot send HandshakeV10 packet: write tcp 127.0.0.1:33303->127.0.0.1:33411: wsasend: An established connection was aborted by the software in your host machine.\nWrite(packet) failed\nconn 6"
+time="2026-03-13T23:02:40-06:00" level=info msg=ConnectionClosed connectionID=6
+time="2026-03-13T23:02:40-06:00" level=info msg=NewConnection DisableClientMultiStatements=false connectionID=7
+time="2026-03-13T23:02:40-06:00" level=info msg=NewConnection DisableClientMultiStatements=false connectionID=8
+time="2026-03-13T23:02:40-06:00" level=info msg=ConnectionClosed connectionID=7
+time="2026-03-13T23:02:40-06:00" level=info msg=ConnectionClosed connectionID=8
+time="2026-03-13T23:14:30-06:00" level=info msg=NewConnection DisableClientMultiStatements=false connectionID=9
+time="2026-03-13T23:14:30-06:00" level=warning msg="Cannot read client handshake response from client 9 (127.0.0.1:62286): read tcp 127.0.0.1:33303->127.0.0.1:62286: wsarecv: An existing connection was forcibly closed by the remote host.\nio.ReadFull(header size) failed, it may not be a valid MySQL client"
+time="2026-03-13T23:14:30-06:00" level=info msg=ConnectionClosed connectionID=9
+time="2026-03-13T23:14:30-06:00" level=info msg=NewConnection DisableClientMultiStatements=false connectionID=10
+time="2026-03-13T23:14:30-06:00" level=info msg=NewConnection DisableClientMultiStatements=false connectionID=11
+time="2026-03-13T23:14:30-06:00" level=info msg=ConnectionClosed connectionID=10
+time="2026-03-13T23:14:30-06:00" level=warning msg="error running query" connectTime="2026-03-13 23:14:30.384918 -0600 CST m=+711.838843601" connectionDb=beads_Ember-AI connectionID=11 error="nothing to commit" queryTime="2026-03-13 23:14:30.4002747 -0600 CST m=+711.854200301"
+time="2026-03-13T23:14:30-06:00" level=info msg=NewConnection DisableClientMultiStatements=false connectionID=12
+time="2026-03-13T23:14:30-06:00" level=info msg=ConnectionClosed connectionID=12
+time="2026-03-13T23:14:31-06:00" level=info msg=ConnectionClosed connectionID=11
+Starting server with Config HP="127.0.0.1:33303"|T="28800000"|R="false"|L="info"
+time="2026-03-14T00:56:32-06:00" level=info msg="Server ready. Accepting connections."
+time="2026-03-14T00:56:32-06:00" level=warning msg="secure_file_priv is set to \"\", which is insecure."
+time="2026-03-14T00:56:32-06:00" level=warning msg="Any user with GRANT FILE privileges will be able to read any file which the sql-server process can read."
+time="2026-03-14T00:56:32-06:00" level=warning msg="Please consider restarting the server with secure_file_priv set to a safe (or non-existent) directory."
+time="2026-03-14T00:56:32-06:00" level=info msg=NewConnection DisableClientMultiStatements=false connectionID=2
+time="2026-03-14T00:56:32-06:00" level=info msg=NewConnection DisableClientMultiStatements=false connectionID=1
+time="2026-03-14T00:56:32-06:00" level=error msg="Cannot send HandshakeV10 packet: write tcp 127.0.0.1:33303->127.0.0.1:5841: wsasend: An established connection was aborted by the software in your host machine.\nWrite(packet) failed\nconn 1"
+time="2026-03-14T00:56:32-06:00" level=error msg="Cannot send HandshakeV10 packet: write tcp 127.0.0.1:33303->127.0.0.1:5844: wsasend: An established connection was aborted by the software in your host machine.\nWrite(packet) failed\nconn 2"
+time="2026-03-14T00:56:32-06:00" level=info msg=ConnectionClosed connectionID=1
+time="2026-03-14T00:56:32-06:00" level=info msg=ConnectionClosed connectionID=2
+time="2026-03-14T00:56:33-06:00" level=info msg=NewConnection DisableClientMultiStatements=false connectionID=3
+time="2026-03-14T00:56:33-06:00" level=info msg=NewConnection DisableClientMultiStatements=false connectionID=4
+time="2026-03-14T00:56:33-06:00" level=info msg=ConnectionClosed connectionID=3
+time="2026-03-14T00:56:35-06:00" level=info msg=ConnectionClosed connectionID=4
+time="2026-03-14T00:56:51-06:00" level=info msg=NewConnection DisableClientMultiStatements=false connectionID=5
+time="2026-03-14T00:56:51-06:00" level=error msg="Cannot send HandshakeV10 packet: write tcp 127.0.0.1:33303->127.0.0.1:1282: wsasend: An established connection was aborted by the software in your host machine.\nWrite(packet) failed\nconn 5"
+time="2026-03-14T00:56:51-06:00" level=info msg=ConnectionClosed connectionID=5
+time="2026-03-14T00:56:51-06:00" level=info msg=NewConnection DisableClientMultiStatements=false connectionID=6
+time="2026-03-14T00:56:51-06:00" level=info msg=NewConnection DisableClientMultiStatements=false connectionID=7
+time="2026-03-14T00:56:51-06:00" level=info msg=ConnectionClosed connectionID=6
+time="2026-03-14T00:56:52-06:00" level=warning msg="error running query" connectTime="2026-03-14 00:56:51.5408208 -0600 CST m=+23.980854201" connectionDb=beads_Ember-AI connectionID=7 error="nothing to commit" queryTime="2026-03-14 00:56:52.8890805 -0600 CST m=+25.329113901"
+time="2026-03-14T00:56:54-06:00" level=info msg=NewConnection DisableClientMultiStatements=false connectionID=8
+time="2026-03-14T00:56:54-06:00" level=info msg=ConnectionClosed connectionID=8
+time="2026-03-14T00:56:57-06:00" level=info msg=ConnectionClosed connectionID=7
+Starting server with Config HP="127.0.0.1:33303"|T="28800000"|R="false"|L="info"
+time="2026-03-14T01:10:50-06:00" level=info msg="Server ready. Accepting connections."
+time="2026-03-14T01:10:50-06:00" level=warning msg="secure_file_priv is set to \"\", which is insecure."
+time="2026-03-14T01:10:50-06:00" level=warning msg="Any user with GRANT FILE privileges will be able to read any file which the sql-server process can read."
+time="2026-03-14T01:10:50-06:00" level=warning msg="Please consider restarting the server with secure_file_priv set to a safe (or non-existent) directory."
+time="2026-03-14T01:10:50-06:00" level=info msg=NewConnection DisableClientMultiStatements=false connectionID=1
+time="2026-03-14T01:10:50-06:00" level=warning msg="Cannot read client handshake response from client 1 (127.0.0.1:4337): read tcp 127.0.0.1:33303->127.0.0.1:4337: wsarecv: An existing connection was forcibly closed by the remote host.\nio.ReadFull(header size) failed, it may not be a valid MySQL client"
+time="2026-03-14T01:10:50-06:00" level=info msg=ConnectionClosed connectionID=1
+time="2026-03-14T01:10:50-06:00" level=info msg=NewConnection DisableClientMultiStatements=false connectionID=2
+time="2026-03-14T01:10:50-06:00" level=warning msg="Cannot read client handshake response from client 2 (127.0.0.1:4338): read tcp 127.0.0.1:33303->127.0.0.1:4338: wsarecv: An existing connection was forcibly closed by the remote host.\nio.ReadFull(header size) failed, it may not be a valid MySQL client"
+time="2026-03-14T01:10:50-06:00" level=info msg=ConnectionClosed connectionID=2
+time="2026-03-14T01:10:50-06:00" level=info msg=NewConnection DisableClientMultiStatements=false connectionID=3
+time="2026-03-14T01:10:50-06:00" level=info msg=NewConnection DisableClientMultiStatements=false connectionID=4
+time="2026-03-14T01:10:50-06:00" level=info msg=ConnectionClosed connectionID=3
+time="2026-03-14T01:10:51-06:00" level=warning msg="error running query" connectTime="2026-03-14 01:10:50.9731483 -0600 CST m=+4.751204901" connectionDb=beads_Ember-AI connectionID=4 error="nothing to commit" queryTime="2026-03-14 01:10:51.061404 -0600 CST m=+4.839460601"
+time="2026-03-14T01:10:51-06:00" level=info msg=NewConnection DisableClientMultiStatements=false connectionID=5
+time="2026-03-14T01:10:51-06:00" level=info msg=ConnectionClosed connectionID=5
+time="2026-03-14T01:10:52-06:00" level=warning msg="error running query" connectTime="2026-03-14 01:10:50.9731483 -0600 CST m=+4.751204901" connectionDb=beads_Ember-AI connectionID=4 error="nothing to commit" queryTime="2026-03-14 01:10:52.6003563 -0600 CST m=+6.378412901"
+time="2026-03-14T01:10:55-06:00" level=info msg=ConnectionClosed connectionID=4
+time="2026-03-14T01:18:23-06:00" level=info msg=NewConnection DisableClientMultiStatements=false connectionID=7
+time="2026-03-14T01:18:23-06:00" level=info msg=NewConnection DisableClientMultiStatements=false connectionID=6
+time="2026-03-14T01:18:24-06:00" level=error msg="Cannot send HandshakeV10 packet: write tcp 127.0.0.1:33303->127.0.0.1:23441: wsasend: An established connection was aborted by the software in your host machine.\nWrite(packet) failed\nconn 6"
+time="2026-03-14T01:18:24-06:00" level=info msg=ConnectionClosed connectionID=6
+time="2026-03-14T01:18:25-06:00" level=info msg=NewConnection DisableClientMultiStatements=false connectionID=8
+time="2026-03-14T01:18:25-06:00" level=info msg=ConnectionClosed connectionID=7
+time="2026-03-14T01:18:28-06:00" level=warning msg="error running query" connectTime="2026-03-14 01:18:25.274257 -0600 CST m=+459.052313601" connectionDb=beads_Ember-AI connectionID=8 error="nothing to commit" queryTime="2026-03-14 01:18:28.6552737 -0600 CST m=+462.433330301"
+time="2026-03-14T01:18:31-06:00" level=info msg=NewConnection DisableClientMultiStatements=false connectionID=9
+time="2026-03-14T01:18:31-06:00" level=info msg=ConnectionClosed connectionID=9
+time="2026-03-14T01:18:36-06:00" level=info msg=ConnectionClosed connectionID=8
