@@ -55,6 +55,41 @@ spec:
             secretKeyRef:
               name: ember-ai-env-secrets
               key: KEYCLOAK_CLIENT_SECRET
+        # -----------------------------------------------------------------
+        # LLM Provider API Keys (injected from secret for config.yaml)
+        # -----------------------------------------------------------------
+        - name: DEEPINFRA_API_KEY
+          valueFrom:
+            secretKeyRef:
+              name: ember-ai-env-secrets
+              key: DEEPINFRA_API_KEY
+        - name: NVIDIA_API_KEY
+          valueFrom:
+            secretKeyRef:
+              name: ember-ai-env-secrets
+              key: NVIDIA_API_KEY
+        - name: OPENAI_API_KEY
+          valueFrom:
+            secretKeyRef:
+              name: ember-ai-env-secrets
+              key: OPENAI_API_KEY
+        - name: ANTHROPIC_API_KEY
+          valueFrom:
+            secretKeyRef:
+              name: ember-ai-env-secrets
+              key: ANTHROPIC_API_KEY
+        - name: GEMINI_API_KEY
+          valueFrom:
+            secretKeyRef:
+              name: ember-ai-env-secrets
+              key: GEMINI_API_KEY
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "200m"
+          limits:
+            memory: "1Gi"
+            cpu: "1000m"
         volumeMounts:
         - name: litellm-config
           mountPath: /app/config.yaml

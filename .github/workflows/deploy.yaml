@@ -1,0 +1,56 @@
+name: Deploy Ember AI
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'k8s/**'
+      - 'deploy.ps1'
+  workflow_dispatch:
+
+env:
+  NAMESPACE: ember-ai
+
+jobs:
+  deploy:
+    name: Deploy to K3s
+    runs-on: self-hosted   # Must have kubectl access to K3s
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Validate manifests
+        run: |
+          for f in k8s/*.yaml; do
+            echo "Validating $f..."
+            kubectl apply --dry-run=client -f "$f" 2>&1 || true
+          done
+
+      - name: Apply manifests
+        run: |
+          MANIFESTS=(
+            "k8s/00-namespace-and-secrets.yaml"
+            "k8s/01-pgvector.yaml"
+            "k8s/02-valkey.yaml"
+            "k8s/06-external-secrets-operator.yaml"
+            "k8s/07-bitwarden-eso-clusterstore.yaml"
+            "k8s/08-litellm-config.yaml"
+            "k8s/03-litellm.yaml"
+            "k8s/04-n8n.yaml"
+            "k8s/05-openziti.yaml"
+          )
+          for m in "${MANIFESTS[@]}"; do
+            echo "→ Applying $m..."
+            kubectl apply -f "$m"
+          done
+
+      - name: Wait for rollout
+        run: |
+          kubectl rollout status deployment/litellm -n $NAMESPACE --timeout=120s || true
+          kubectl rollout status deployment/valkey -n $NAMESPACE --timeout=120s || true
+          kubectl rollout status deployment/ziti-edge-tunnel -n $NAMESPACE --timeout=120s || true
+          kubectl rollout status statefulset/pgvector -n $NAMESPACE --timeout=120s || true
+          kubectl rollout status statefulset/n8n -n $NAMESPACE --timeout=120s || true
+
+      - name: Verify pods
+        run: kubectl get pods -n $NAMESPACE -o wide

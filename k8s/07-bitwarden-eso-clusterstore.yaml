@@ -26,9 +26,8 @@ spec:
 
 ---
 # =============================================================================
-# ExternalSecret — pulls Ember AI secrets from Bitwarden SM
-# Maps Bitwarden secret IDs to K8s secret keys.
-# Replace <BW_SECRET_ID_*> placeholders with your actual Bitwarden secret UUIDs.
+# ExternalSecret — pulls ALL Ember AI secrets from Bitwarden SM
+# Replace <BW_SECRET_ID_*> placeholders with actual Bitwarden secret UUIDs.
 # =============================================================================
 apiVersion: external-secrets.io/v1beta1
 kind: ExternalSecret
@@ -44,6 +43,7 @@ spec:
     name: ember-ai-env-secrets
     creationPolicy: Owner
   data:
+    # --- Core ---
     - secretKey: POSTGRES_USER
       remoteRef:
         key: "<BW_SECRET_ID_POSTGRES_USER>"
@@ -56,13 +56,30 @@ spec:
     - secretKey: DATABASE_URL
       remoteRef:
         key: "<BW_SECRET_ID_DATABASE_URL>"
+    # --- SSO ---
     - secretKey: KEYCLOAK_CLIENT_ID
       remoteRef:
         key: "<BW_SECRET_ID_KEYCLOAK_CLIENT_ID>"
     - secretKey: KEYCLOAK_CLIENT_SECRET
       remoteRef:
         key: "<BW_SECRET_ID_KEYCLOAK_CLIENT_SECRET>"
-    # OpenZiti identity sourced from embernet org → emberflux
+    # --- LLM Provider API Keys ---
+    - secretKey: DEEPINFRA_API_KEY
+      remoteRef:
+        key: "<BW_SECRET_ID_DEEPINFRA_API_KEY>"
+    - secretKey: NVIDIA_API_KEY
+      remoteRef:
+        key: "<BW_SECRET_ID_NVIDIA_API_KEY>"
+    - secretKey: OPENAI_API_KEY
+      remoteRef:
+        key: "<BW_SECRET_ID_OPENAI_API_KEY>"
+    - secretKey: ANTHROPIC_API_KEY
+      remoteRef:
+        key: "<BW_SECRET_ID_ANTHROPIC_API_KEY>"
+    - secretKey: GEMINI_API_KEY
+      remoteRef:
+        key: "<BW_SECRET_ID_GEMINI_API_KEY>"
+    # --- Network (embernet org → emberflux) ---
     - secretKey: ZITI_IDENTITY_JSON
       remoteRef:
         key: "<BW_SECRET_ID_ZITI_IDENTITY>"

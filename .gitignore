@@ -1,0 +1,25 @@
+# Dolt / Beads internals
+.dolt/
+.doltcfg/
+beads_Ember-AI/
+config.yaml
+
+# Beads runtime (keep backup/ for git sync)
+.beads/dolt/
+.beads/dolt-server.lock
+.beads/dolt-server.pid
+.beads/dolt-server.port
+.beads/dolt-server.log
+.beads/hooks/
+
+# OS
+Thumbs.db
+.DS_Store
+
+# IDE
+.vscode/
+.idea/
+
+# Secrets (never commit real values)
+*.env
+.env.*
