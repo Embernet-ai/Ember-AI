@@ -11,6 +11,24 @@ data:
   config.yaml: |
     model_list:
       # -----------------------------------------------------------------------
+      # NVIDIA Nemotron — Primary Engine & Agent
+      # -----------------------------------------------------------------------
+
+      # Main engine: Nemotron 3 Super 120B via DeepInfra
+      - model_name: nemotron-120b
+        litellm_params:
+          model: deepinfra/nvidia/nemotron-3-super-120b-a12b
+          api_key: os.environ/DEEPINFRA_API_KEY
+          api_base: https://api.deepinfra.com/v1/openai
+
+      # Agent model: NemoClaw via NVIDIA NIM
+      - model_name: nemoclaw
+        litellm_params:
+          model: nvidia_nim/nvidia/nemoclaw
+          api_key: os.environ/NVIDIA_API_KEY
+          api_base: https://integrate.api.nvidia.com/v1
+
+      # -----------------------------------------------------------------------
       # OpenAI Models
       # -----------------------------------------------------------------------
       - model_name: gpt-4o
@@ -50,8 +68,13 @@ data:
       num_retries: 2
       timeout: 120
       fallbacks:
-        - gpt-4o: ["claude-3.5-sonnet", "gemini-2.0-flash"]
-        - claude-3.5-sonnet: ["gpt-4o", "gemini-2.0-flash"]
+        # Main engine fallback chain
+        - nemotron-120b: ["gpt-4o", "claude-3.5-sonnet"]
+        # Agent model fallback chain
+        - nemoclaw: ["gpt-4o", "claude-3.5-sonnet"]
+        # Legacy fallbacks
+        - gpt-4o: ["nemotron-120b", "claude-3.5-sonnet"]
+        - claude-3.5-sonnet: ["nemotron-120b", "gpt-4o"]
 
     # -------------------------------------------------------------------------
     # Caching — Valkey (Redis-compatible)
